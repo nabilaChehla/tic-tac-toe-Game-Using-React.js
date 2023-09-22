@@ -1,5 +1,6 @@
+import{ useState } from 'react';
 
-function Square({value}:{value:number}){
+function Square({value}:{value:string}){
   return(
     <button className="square">{value}</button>
   )
@@ -7,24 +8,36 @@ function Square({value}:{value:number}){
 
 
 function Board() {
+  const [count_turn, setTurn] = useState<number>(0);
+  
+  function HandelTurn(){
+    if(count_turn%2==0 && count_turn<9){
+      Check_O()
+    }
+    else if(count_turn%2==1 && count_turn<9){
+      Check_X()
+    }
+    else(console.log('partie terminée'));
+    setTurn(count_turn+1)
+  }
 
     return (
       <>
       <div className="board-row">
-      <Square value={1} />
-      <Square value={2} />
-      <Square value={3} />
+      <Square value={''} />
+      <Square value={''} />
+      <Square value={''} />
       </div>
       <div className="board-row">
-      <Square value={4} />
-      <Square value={5} />
-      <Square value={6} />
+      <Square value={''} />
+      <Square value={''} />
+      <Square value={''} />
       </div>
 
       <div className="board-row">
-      <Square value={7} />
-      <Square value={8} />
-      <Square value={9} />
+      <Square value={''} />
+      <Square value={''} />
+      <Square value={''} />
       </div>
       </>
     )
