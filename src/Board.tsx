@@ -1,47 +1,54 @@
 import{ useState } from 'react';
 
-function Square({value}:{value:string}){
+let turn = 0 ; 
+
+
+
+function Square({id}:{id:number}){
+  const [check, setCheck]=useState<string>('');
+
+  function handelCheck(){
+    if(check=='' && turn %2 == 0  ){
+      setCheck('X')
+      turn ++ ;
+    }
+    else if(check=='' && turn %2 == 1 ){
+     setCheck('O');
+      turn ++ ;
+  }}
+
   return(
-    <button className="square">{value}</button>
+    <button className="square" onClick={handelCheck}>{check}</button>
   )
 }
 
 
 function Board() {
-  const [count_turn, setTurn] = useState<number>(0);
-  
-  function HandelTurn(){
-    if(count_turn%2==0 && count_turn<9){
-      Check_O()
-    }
-    else if(count_turn%2==1 && count_turn<9){
-      Check_X()
-    }
-    else(console.log('partie terminée'));
-    setTurn(count_turn+1)
-  }
+
 
     return (
       <>
       <div className="board-row">
-      <Square value={''} />
-      <Square value={''} />
-      <Square value={''} />
+      <Square />
+      <Square />
+      <Square />
       </div>
       <div className="board-row">
-      <Square value={''} />
-      <Square value={''} />
-      <Square value={''} />
+      <Square />
+      <Square />
+      <Square />
       </div>
 
       <div className="board-row">
-      <Square value={''} />
-      <Square value={''} />
-      <Square value={''} />
+      <Square />
+      <Square />
+      <Square />
       </div>
       </>
     )
   }
   
+
+
   export default Board
   
