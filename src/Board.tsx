@@ -1,47 +1,92 @@
 import { useState } from 'react';
 
-type Marker = 'X' | 'O' | null;
+type Marker = 'X' | 'O' | null ; 
+type boardSquares = Array<Marker>;
 
-function Square({ value, setMarkerOnClick }: { value: Marker, setMarkerOnClick: () => void }) {
+function Square({value, onSquareClick}:{value:Marker , onSquareClick:()=>void}) {
   return (
-    <button className="square" onClick={setMarkerOnClick}>{value} </button>
-  )
+    <button className="square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
+}
+
+ function Board({squares,onPlay}:{squares:boardSquares,onPlay:(i:number)=>void}) {
+
+
+  return (
+    <>
+      <div className="status">{status}</div>
+      <div className="board-row">
+        <Square value={squares[0]} onSquareClick={() => onPlay(0)} />
+        <Square value={squares[1]} onSquareClick={() => onPlay(1)} />
+        <Square value={squares[2]} onSquareClick={() => onPlay(2)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[3]} onSquareClick={() => onPlay(3)} />
+        <Square value={squares[4]} onSquareClick={() => onPlay(4)} />
+        <Square value={squares[5]} onSquareClick={() => onPlay(5)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[6]} onSquareClick={() => onPlay(6)} />
+        <Square value={squares[7]} onSquareClick={() => onPlay(7)} />
+        <Square value={squares[8]} onSquareClick={() => onPlay(8)} />
+      </div>
+    </>
+  );
 }
 
 
-function Board() {
+function Game(){
 
+  const [history , setHistory] = useState<Array<boardSquares>>([Array(9).fill(null)]);
 
-  const [boardSquares, setboardSquares] = useState<Array<null | Marker>>(Array(9).fill(null));
-  const [turn , setTurn] = useState<Marker>('X');
+  const [markerNext, setMarkerNext] = useState<Marker>('X');
+  const [squares, setSquares] = useState<boardSquares>(Array(9).fill(null));
 
-  function handelBoardSquare(i: number) {
-    if(calculateWinner(boardSquares)==null){
-      // IF THERE IS NO WINNER YET : 
-    const squares = boardSquares.slice();// a copy of boardSquares to modify the board 
-
-    if( turn == 'X' && boardSquares[i]==null) {
-          squares[i] = 'X';
-          setTurn('O') // exchange turn
+  function handleClick(i: number) {
+    if (calculateWinner(squares) || squares[i]!=null) {
+      return;
     }
-    else{
-      if(turn == 'O' && boardSquares[i]==null){
-           squares[i] = 'O';
-          setTurn('X')   // exchange turn     
-      }
-      else{console.log ("partie terminée !")}
-    }
+    const nextSquares = squares.slice();
+    let nextHistory = history.slice();
 
-    setboardSquares(squares);
+    if (markerNext=='X') {
+      nextSquares[i] = 'X';
+      setMarkerNext('O');
+    } else {
+      nextSquares[i] = 'O';
+      setMarkerNext('X');
     }
-    else{      // IF THERE IS A WINNER ALREADY: 
-      console.log(calculateWinner(boardSquares)+' WON !') }
+    setSquares(nextSquares);
+    nextHistory = history.concat([nextSquares]);
+    setHistory(nextHistory);
+  }
 
-  }//---------------------------------------------------------------------------------
+
+
   
-//  TO CHECK IF THERE IS A WINNER :-----------------------------------------------------------------
-function calculateWinner(squares : Array<null | Marker>) {
-  if(squares.length==9){
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + markerNext;
+  }
+
+console.log(status)
+console.log(history
+  
+  )
+return(
+<Board squares={squares} onPlay={handleClick}/>
+);
+
+}
+
+export default Game; 
+
+function calculateWinner(squares : boardSquares) {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -50,7 +95,7 @@ function calculateWinner(squares : Array<null | Marker>) {
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [2, 4, 6]
+    [2, 4, 6],
   ];
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
@@ -58,35 +103,5 @@ function calculateWinner(squares : Array<null | Marker>) {
       return squares[a];
     }
   }
-  }
-  else{ console.log('error : squares in calculateWinner function shoud have 9 elements ')}
   return null;
 }
-//--------------------------------------------------------------------------------
-
-
-  return (
-    <>
-      <div className="board-row">
-        <Square value={boardSquares[0]} setMarkerOnClick={() => { handelBoardSquare(0) }} />
-        <Square value={boardSquares[1]} setMarkerOnClick={() => { handelBoardSquare(1) }} />
-        <Square value={boardSquares[2]} setMarkerOnClick={() => { handelBoardSquare(2) }} />
-      </div>
-      <div className="board-row">
-        <Square value={boardSquares[3]} setMarkerOnClick={() => { handelBoardSquare(3) }} />
-        <Square value={boardSquares[4]} setMarkerOnClick={() => { handelBoardSquare(4) }} />
-        <Square value={boardSquares[5]} setMarkerOnClick={() => { handelBoardSquare(5) }} />
-      </div>
-
-      <div className="board-row">
-        <Square value={boardSquares[6]} setMarkerOnClick={() => { handelBoardSquare(6) }} />
-        <Square value={boardSquares[7]} setMarkerOnClick={() => { handelBoardSquare(7) }} />
-        <Square value={boardSquares[8]} setMarkerOnClick={() => { handelBoardSquare(8) }} />
-      </div>
-    </>
-  )
-}
-
-
-
-export default Board
