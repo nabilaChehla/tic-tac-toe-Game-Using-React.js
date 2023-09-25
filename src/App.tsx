@@ -1,9 +1,9 @@
-import Board from "./Board"
+import Game from "./componants/Game"
 import './style.css'
 function App() {
   return (
     <>
-    <Board />
+    <Game />
     </>
   )
 }
