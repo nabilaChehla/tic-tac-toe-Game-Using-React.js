@@ -17,13 +17,13 @@ function Square({value, onSquareClick}:{value:Marker , onSquareClick:()=>void}) 
 //--------------------------------------------------------------------------------------------
                                 // Board COMPONANT
 //-------------------------------------------------------------------------------------------
- function Board({squares,onPlay,status}:{squares:boardSquares,onPlay:(i:number)=>void,status:string}) {
-
-
+ function Board({history,onPlay,status}:{history:Array<boardSquares>,onPlay:(i:number)=>void,status:string}) {
+       const squares: boardSquares= history[history.length-1]; 
   return (
     <>
       <div className="status">{status}</div>
       <div className="board-row">
+
         <Square value={squares[0]} onSquareClick={() => onPlay(0)} />
         <Square value={squares[1]} onSquareClick={() => onPlay(1)} />
         <Square value={squares[2]} onSquareClick={() => onPlay(2)} />
@@ -93,6 +93,7 @@ function jumpTo(turn:number){
   }
 });
    setHistory(newHistory);
+   setSquares(newHistory[newHistory.length-1]);
 }
 
 
@@ -101,7 +102,7 @@ console.log(history)
   
 return(
   <>
- <Board squares={squares} onPlay={handleClick} status ={naxtplayerIs()}/> 
+ <Board history={history} onPlay={handleClick} status ={naxtplayerIs()}/> 
  <GoToButton history={history} onClickHistory={jumpTo}/>
   </>
 
