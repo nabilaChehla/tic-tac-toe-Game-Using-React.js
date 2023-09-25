@@ -3,6 +3,10 @@ import { useState } from 'react';
 type Marker = 'X' | 'O' | null ; 
 type boardSquares = Array<Marker>;
 
+
+//--------------------------------------------------------------------------------------------
+                                // Square COMPONANT
+//-------------------------------------------------------------------------------------------
 function Square({value, onSquareClick}:{value:Marker , onSquareClick:()=>void}) {
   return (
     <button className="square" onClick={onSquareClick}>
@@ -10,8 +14,10 @@ function Square({value, onSquareClick}:{value:Marker , onSquareClick:()=>void}) 
     </button>
   );
 }
-
- function Board({squares,onPlay}:{squares:boardSquares,onPlay:(i:number)=>void}) {
+//--------------------------------------------------------------------------------------------
+                                // Board COMPONANT
+//-------------------------------------------------------------------------------------------
+ function Board({squares,onPlay,status}:{squares:boardSquares,onPlay:(i:number)=>void,status:string}) {
 
 
   return (
@@ -36,7 +42,9 @@ function Square({value, onSquareClick}:{value:Marker , onSquareClick:()=>void}) 
   );
 }
 
-
+//--------------------------------------------------------------------------------------------
+                                // GAME COMPONANT
+//--------------------------------------------------------------------------------------------
 function Game(){
 
   const [history , setHistory] = useState<Array<boardSquares>>([Array(9).fill(null)]);
@@ -61,31 +69,70 @@ function Game(){
     setSquares(nextSquares);
     nextHistory = history.concat([nextSquares]);
     setHistory(nextHistory);
+    
   }
 
 
 
-  
+
+function naxtplayerIs(){
   const winner = calculateWinner(squares);
-  let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    return  'Winner: ' + winner;
   } else {
-    status = 'Next player: ' + markerNext;
+    return  'Next player: ' + markerNext;
   }
-
-console.log(status)
-console.log(history
+}
   
-  )
+function jumpTo(turn:number){
+ const newHistory:Array<boardSquares> = [] ;
+
+ history.forEach((boardSquare, index) => {
+  if (index <= turn) {
+    newHistory.push(boardSquare);
+  }
+});
+   setHistory(newHistory);
+}
+
+
+console.log(history)
+
+  
 return(
-<Board squares={squares} onPlay={handleClick}/>
+  <>
+ <Board squares={squares} onPlay={handleClick} status ={naxtplayerIs()}/> 
+ <GoToButton history={history} onClickHistory={jumpTo}/>
+  </>
+
 );
 
 }
+//--------------------------------------------------------------------------------------------
+                                // GoToButton COMPONANT
+//--------------------------------------------------------------------------------------------
+function GoToButton({history, onClickHistory}:{history:Array<boardSquares>,onClickHistory:(i:number)=>void}) {
+  const historyButtons = history.map((boardSquare, index) => (
+    <li key={index}>
+      <button onClick={()=>onClickHistory(index)}>go to step {index}</button>
+    </li>
+  ));
+  return(
+  <ul>
+    {historyButtons}
+  </ul>
+);
+}
+
+
+
 
 export default Game; 
 
+
+
+
+//-------------------------------------------------------------------------------------
 function calculateWinner(squares : boardSquares) {
   const lines = [
     [0, 1, 2],
